@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -16,6 +17,10 @@
     --accent-marinha-2: #163a3f;
     --accent-cosmos: #8b6fe8;
     --accent-cosmos-2: #241c47;
+    --accent-dicionario: #d4a24c;
+    --accent-dicionario-2: #3a2f18;
+    --accent-floresta: #4caf6a;
+    --accent-floresta-2: #163a22;
   }
 
   * { box-sizing: border-box; }
@@ -66,6 +71,8 @@
 
   .portal-card.marinha:hover { border-color: var(--accent-marinha); }
   .portal-card.cosmos:hover { border-color: var(--accent-cosmos); }
+  .portal-card.dicionario:hover { border-color: var(--accent-dicionario); }
+  .portal-card.floresta:hover { border-color: var(--accent-floresta); }
 
   .portal-emblem {
     width: 40px; height: 40px;
@@ -76,6 +83,8 @@
   }
   .marinha .portal-emblem { background: var(--accent-marinha-2); color: var(--accent-marinha); }
   .cosmos .portal-emblem { background: var(--accent-cosmos-2); color: var(--accent-cosmos); }
+  .dicionario .portal-emblem { background: var(--accent-dicionario-2); color: var(--accent-dicionario); }
+  .floresta .portal-emblem { background: var(--accent-floresta-2); color: var(--accent-floresta); }
 
   .portal-card h2 { margin: 0 0 6px; font-size: 1.25rem; font-weight: normal; }
   .portal-card p { margin: 0; color: var(--muted); font-size: 0.85rem; line-height: 1.4; }
@@ -213,13 +222,24 @@
 
   /* Temas por portal */
   body.theme-marinha .cell.found { background: var(--accent-marinha); }
-  body.theme-marinha #wordList li.done { }
   body.theme-marinha .win-msg { background: var(--accent-marinha-2); color: var(--accent-marinha); }
   body.theme-marinha .portal-title .tag { color: var(--accent-marinha); }
+  body.theme-marinha .notebook-fab:hover { border-color: var(--accent-marinha); }
 
   body.theme-cosmos .cell.found { background: var(--accent-cosmos); }
   body.theme-cosmos .win-msg { background: var(--accent-cosmos-2); color: var(--accent-cosmos); }
   body.theme-cosmos .portal-title .tag { color: var(--accent-cosmos); }
+  body.theme-cosmos .notebook-fab:hover { border-color: var(--accent-cosmos); }
+
+  body.theme-dicionario .cell.found { background: var(--accent-dicionario); }
+  body.theme-dicionario .win-msg { background: var(--accent-dicionario-2); color: var(--accent-dicionario); }
+  body.theme-dicionario .portal-title .tag { color: var(--accent-dicionario); }
+  body.theme-dicionario .notebook-fab:hover { border-color: var(--accent-dicionario); }
+
+  body.theme-floresta .cell.found { background: var(--accent-floresta); }
+  body.theme-floresta .win-msg { background: var(--accent-floresta-2); color: var(--accent-floresta); }
+  body.theme-floresta .portal-title .tag { color: var(--accent-floresta); }
+  body.theme-floresta .notebook-fab:hover { border-color: var(--accent-floresta); }
 
   /* ---------- Ícone flutuante do caderninho ---------- */
   .notebook-fab {
@@ -254,9 +274,6 @@
     border: 2px solid var(--bg);
   }
   .fab-dot.show { display: block; }
-
-  body.theme-marinha .notebook-fab:hover { border-color: var(--accent-marinha); }
-  body.theme-cosmos .notebook-fab:hover { border-color: var(--accent-cosmos); }
 
   /* ---------- Modal do caderninho ---------- */
   .notebook-modal {
@@ -444,6 +461,76 @@ const PORTALS = {
       { word: "BIGBANG",    def: "Teoria que descreve a origem do universo a partir de uma expansão inicial extremamente densa e quente." },
       { word: "EXOPLANETA", def: "Planeta que orbita uma estrela fora do nosso sistema solar." }
     ]
+  },
+  dicionario: {
+    name: "Dicionário Comum",
+    tag: "Portal 3 · Vocabulário",
+    emblem: "🔤",
+    className: "dicionario",
+    description: "Palavras do dia a dia — sentimentos e valores — e seus significados.",
+    theme: "theme-dicionario",
+    words: [
+      { word: "SAUDADE",       def: "Sentimento de falta de algo ou alguém querido; considerada uma das palavras mais difíceis de traduzir do português." },
+      { word: "AMIZADE",       def: "Vínculo de afeto e confiança construído entre pessoas ao longo do tempo." },
+      { word: "LIBERDADE",     def: "Capacidade de agir, pensar ou se expressar sem imposições indevidas." },
+      { word: "ESPERANCA",     def: "Sentimento de que algo bom ainda pode acontecer, mesmo diante de dificuldades." },
+      { word: "CORAGEM",       def: "Disposição para enfrentar o medo, a dor ou o desconhecido." },
+      { word: "GRATIDAO",      def: "Sentimento de reconhecimento e apreço por algo recebido ou vivido." },
+      { word: "HONESTIDADE",   def: "Qualidade de quem age e fala com sinceridade, sem enganar os outros." },
+      { word: "PACIENCIA",     def: "Capacidade de esperar ou lidar com dificuldades sem se irritar." },
+      { word: "SABEDORIA",     def: "Conhecimento profundo adquirido pela experiência e reflexão ao longo da vida." },
+      { word: "GENEROSIDADE",  def: "Disposição para dar ou compartilhar sem esperar algo em troca." },
+      { word: "HUMILDADE",     def: "Qualidade de reconhecer os próprios limites sem se vangloriar." },
+      { word: "PERSISTENCIA",  def: "Capacidade de continuar tentando mesmo diante de obstáculos e fracassos." },
+      { word: "CRIATIVIDADE",  def: "Habilidade de imaginar soluções ou ideias originais para um problema." },
+      { word: "SIMPLICIDADE",  def: "Qualidade daquilo que é claro, direto e sem excessos." },
+      { word: "TRANQUILIDADE", def: "Estado de calma e ausência de agitação ou preocupação." },
+      { word: "FELICIDADE",    def: "Sensação de bem-estar e satisfação profunda com a vida." },
+      { word: "SINCERIDADE",   def: "Qualidade de expressar pensamentos e sentimentos de forma verdadeira." },
+      { word: "LEALDADE",      def: "Fidelidade e compromisso duradouro com uma pessoa, grupo ou causa." },
+      { word: "COMPAIXAO",     def: "Sentimento de solidariedade diante do sofrimento alheio, com vontade de ajudar." },
+      { word: "EMPATIA",       def: "Capacidade de se colocar no lugar do outro e compreender o que ele sente." },
+      { word: "RESILIENCIA",   def: "Capacidade de se recuperar e se adaptar diante de situações difíceis." },
+      { word: "OTIMISMO",      def: "Tendência a esperar os melhores resultados possíveis diante das situações." },
+      { word: "SERENIDADE",    def: "Estado de paz interior mesmo diante de dificuldades externas." },
+      { word: "PROSPERIDADE",  def: "Condição de bem-estar, crescimento e sucesso ao longo do tempo." },
+      { word: "CURIOSIDADE",   def: "Desejo de aprender, explorar ou entender algo novo." }
+    ]
+  },
+  floresta: {
+    name: "Floresta",
+    tag: "Portal 4 · Vida Terrestre",
+    emblem: "🌳",
+    className: "floresta",
+    description: "Plantas, animais e paisagens que habitam a mata.",
+    theme: "theme-floresta",
+    words: [
+      { word: "ARVORE",     def: "Planta de grande porte com tronco lenhoso, copa de folhas e raízes profundas." },
+      { word: "FOLHA",      def: "Parte da planta responsável por captar luz solar e realizar a fotossíntese." },
+      { word: "RAIZ",       def: "Parte da planta que fica sob o solo, absorvendo água e nutrientes." },
+      { word: "TRONCO",     def: "Parte central e rígida da árvore, que sustenta os galhos e a copa." },
+      { word: "MUSGO",      def: "Pequena planta sem flores que cresce em locais úmidos e sombreados." },
+      { word: "COGUMELO",   def: "Corpo reprodutivo de um fungo, muitas vezes encontrado no solo da floresta." },
+      { word: "ESQUILO",    def: "Pequeno mamífero ágil que vive em árvores e costuma guardar sementes para o inverno." },
+      { word: "RAPOSA",     def: "Mamífero carnívoro de focinho alongado e cauda espessa, conhecido pela esperteza." },
+      { word: "CORUJA",     def: "Ave de rapina noturna, com visão e audição extremamente apuradas." },
+      { word: "LOBO",       def: "Mamífero selvagem que vive e caça em grupos chamados de matilhas." },
+      { word: "URSO",       def: "Grande mamífero de pelagem espessa, onívoro, encontrado em florestas de clima frio." },
+      { word: "VEADO",      def: "Mamífero herbívoro de pernas longas e finas, conhecido pela agilidade ao fugir de predadores." },
+      { word: "JAVALI",     def: "Mamífero selvagem parecido com o porco, de presas curvas e pelagem áspera." },
+      { word: "TATU",       def: "Mamífero coberto por uma carapaça óssea, capaz de se enrolar para se proteger." },
+      { word: "ONCA",       def: "Grande felino predador de pelagem manchada, um dos maiores das Américas." },
+      { word: "MACACO",     def: "Mamífero ágil de membros longos, muitas vezes vivendo em grupos nas copas das árvores." },
+      { word: "TUCANO",     def: "Ave tropical reconhecida pelo bico grande e colorido." },
+      { word: "BORBOLETA",  def: "Inseto de asas coloridas que passa por metamorfose completa antes de voar." },
+      { word: "FORMIGA",    def: "Inseto social que vive em colônias organizadas e carrega cargas várias vezes o próprio peso." },
+      { word: "MINHOCA",    def: "Pequeno animal de corpo alongado que vive no solo e ajuda a fertilizar a terra." },
+      { word: "SERPENTE",   def: "Réptil de corpo longo e sem patas, que se movimenta rastejando pelo chão." },
+      { word: "VAGALUME",   def: "Inseto capaz de emitir luz própria, comum em noites de floresta." },
+      { word: "CLAREIRA",   def: "Espaço aberto em meio à floresta, onde a luz do sol chega diretamente ao chão." },
+      { word: "HUMUS",      def: "Camada de matéria orgânica decomposta que torna o solo mais fértil." },
+      { word: "CAMUFLAGEM", def: "Estratégia de usar cor ou padrão do ambiente para se esconder de predadores ou presas." }
+    ]
   }
 };
 
@@ -460,7 +547,7 @@ let state = {
   placements: [],    // palavras sorteadas para a rodada atual
   roundFound: new Set(),  // palavras encontradas NESTA rodada específica
   discovered: new Set(),  // TODAS as palavras já descobertas neste portal ao longo do tempo (salvas no localStorage)
-  progress: {}        
+  progress: {}
 };
 
 /* =========================================================
@@ -477,7 +564,6 @@ function loadProgress() {
 
 function saveProgress() {
   state.progress = loadProgress();
-  // Transforma o Set 'discovered' em array para salvar no JSON
   state.progress[state.portalKey] = Array.from(state.discovered);
   localStorage.setItem("cacapalavras_progress", JSON.stringify(state.progress));
 }
@@ -498,11 +584,9 @@ function pickPuzzleWords(portalKey, count) {
   const portal = PORTALS[portalKey];
   const discovered = state.discovered || new Set();
 
-  // Pega primeiro as palavras que o usuário AINDA NÃO descobriu
   const unseen = portal.words.filter(w => !discovered.has(w.word));
   let selected = shuffle(unseen).slice(0, count);
 
-  // Se já descobriu quase tudo ou tudo, completa com as já conhecidas para poder rejogar
   if (selected.length < count) {
     const known = portal.words.filter(w => discovered.has(w.word));
     const filler = shuffle(known).slice(0, count - selected.length);
@@ -800,7 +884,7 @@ function evaluateSelection(path) {
 
   if (match) {
     state.roundFound.add(match.word);
-    state.discovered.add(match.word); // Adiciona ao grimório geral do portal
+    state.discovered.add(match.word);
     saveProgress();
 
     match.cells.forEach(([r, c]) => cellEl(r, c) && cellEl(r, c).classList.add("found"));
@@ -832,8 +916,7 @@ function renderWordList() {
 
 function renderNotebook() {
   const noteEl = document.getElementById("notebook");
-  
-  // No grimório modal, mostramos TODAS as palavras que o jogador já descobriu na vida naquele portal!
+
   const unlockedWords = Array.from(state.discovered);
 
   if (unlockedWords.length === 0) {
@@ -842,7 +925,6 @@ function renderNotebook() {
   }
 
   noteEl.innerHTML = "";
-  // Mapeia as definições do portal correspondentes às palavras descobertas
   const portalWordsMap = PORTALS[state.portalKey].words;
 
   unlockedWords.forEach(wordStr => {
@@ -861,7 +943,7 @@ function capitalize(word) {
 }
 
 /* =========================================================
-   NOTIFICATIONS / MODAL / VITÓRIA
+   NOTIFICAÇÕES / MODAL / VITÓRIA
    ========================================================= */
 function showNotebookDot() {
   document.getElementById("fabDot").classList.add("show");
@@ -870,7 +952,7 @@ function hideNotebookDot() {
   document.getElementById("fabDot").classList.remove("show");
 }
 function openNotebookModal() {
-  renderNotebook(); // Garante que o grimório está atualizado ao abrir
+  renderNotebook();
   document.getElementById("notebookModal").classList.add("open");
   hideNotebookDot();
 }
@@ -882,10 +964,10 @@ function checkWin() {
   const total = state.placements.length;
   const foundCount = state.roundFound.size;
   const winEl = document.getElementById("winMsg");
-  
+
   if (foundCount === total) {
     winEl.innerHTML = `
-      Portal completo nesta rodada! 
+      Portal completo nesta rodada!
       <br><button class="new-puzzle-btn" onclick="loadNewPuzzleRodada()">Gerar novo caça-palavras</button>
     `;
     winEl.classList.add("show");
