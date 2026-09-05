@@ -483,12 +483,13 @@
 <!-- GameDistribution SDK -->
 <script type="text/javascript">
   window["GD_OPTIONS"] = {
-    debug: false, // set to true while testing; also toggled via gdsdk.openConsole() in the browser console
-    gameId: "260694a92da04adcb03b51e3e54ef8bb"  // ⚠️ replace with the Game ID from your GameDistribution dashboard
+    debug: true, // ⚠️ temporary: keep this on while testing so SDK logs show up in the console; set back to false once ads are confirmed working
+    gameId: "260694a92da04adcb03b51e3e54ef8bb", // ⚠️ replace with the Game ID from your GameDistribution dashboard
     advertisementSettings: {
       autoplay: true,
     },
     onEvent: function (event) {
+      console.log("[GameDistribution SDK]", event.name, event); // temporary debug log — remove once everything is confirmed working
       switch (event.name) {
         case "SDK_GAME_START":
           // An ad just finished (or none was shown) — resume music if it was playing.
@@ -500,9 +501,11 @@
           break;
         case "SDK_READY":
           // SDK loaded successfully.
+          console.log("[GameDistribution SDK] Ready. If no ad shows, the game ID likely has no ad inventory yet (common before the game is reviewed/activated).");
           break;
         case "SDK_ERROR":
           // SDK failed to load or an ad failed — the game keeps working normally either way.
+          console.warn("[GameDistribution SDK] Error event received:", event);
           break;
         case "SDK_GDPR_TRACKING":
         case "SDK_GDPR_TARGETING":
