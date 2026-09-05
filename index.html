@@ -274,6 +274,30 @@
   }
   .fab-dot.show { display: block; }
 
+  /* ---------- Music toggle button ---------- */
+  .music-toggle {
+    position: fixed;
+    left: 22px;
+    bottom: 22px;
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 1.25rem;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.35);
+    z-index: 40;
+  }
+  .music-toggle:hover { border-color: var(--text); }
+  body.theme-marine .music-toggle:hover { border-color: var(--accent-marine); }
+  body.theme-cosmos .music-toggle:hover { border-color: var(--accent-cosmos); }
+  body.theme-dictionary .music-toggle:hover { border-color: var(--accent-dictionary); }
+  body.theme-forest .music-toggle:hover { border-color: var(--accent-forest); }
+
   /* ---------- Notebook modal ---------- */
   .notebook-modal {
     display: none;
@@ -508,6 +532,16 @@
     <span class="fab-icon">📖</span>
     <span class="fab-dot" id="fabDot"></span>
   </button>
+
+  <!-- Floating music toggle -->
+  <button id="musicToggle" class="music-toggle" aria-label="Mute music">
+    <span id="musicIcon">🔊</span>
+  </button>
+
+  <!-- Background music (loops) -->
+  <audio id="bgMusic" loop preload="auto">
+    <source src="zephiramusic-lo-fi-music-583392.mp3" type="audio/mpeg">
+  </audio>
 
   <!-- Notebook modal -->
   <div id="notebookModal" class="notebook-modal" role="dialog" aria-label="Notebook" aria-modal="true">
@@ -1231,6 +1265,45 @@ function loadNewPuzzleRound() {
 }
 
 /* =========================================================
+   BACKGROUND MUSIC (loops, respects a saved mute preference)
+   ========================================================= */
+function initMusic() {
+  const music = document.getElementById("bgMusic");
+  const icon = document.getElementById("musicIcon");
+  const toggleBtn = document.getElementById("musicToggle");
+
+  music.loop = true;
+  music.volume = 0.45;
+
+  const savedMuted = localStorage.getItem("wordportal_music_muted");
+  const startMuted = savedMuted === "true";
+  music.muted = startMuted;
+  icon.textContent = startMuted ? "🔇" : "🔊";
+
+  // Browsers block audio with sound until the user interacts with the page,
+  // so we try to start playback on the first click/touch anywhere.
+  function unlockAutoplay() {
+    music.play().catch(() => {
+      // Playback still blocked (e.g. browser policy); the toggle button
+      // lets the user start it manually.
+    });
+    document.removeEventListener("click", unlockAutoplay);
+    document.removeEventListener("touchstart", unlockAutoplay);
+  }
+  document.addEventListener("click", unlockAutoplay);
+  document.addEventListener("touchstart", unlockAutoplay);
+
+  toggleBtn.addEventListener("click", () => {
+    music.muted = !music.muted;
+    icon.textContent = music.muted ? "🔇" : "🔊";
+    localStorage.setItem("wordportal_music_muted", music.muted ? "true" : "false");
+    if (!music.muted && music.paused) {
+      music.play().catch(() => {});
+    }
+  });
+}
+
+/* =========================================================
    LOADING SCREEN
    ========================================================= */
 function runLoadingScreen() {
@@ -1270,6 +1343,7 @@ document.addEventListener("keydown", (e) => {
   if (e.key === "Escape") closeNotebookModal();
 });
 
+initMusic();
 renderDefaultDecor();
 renderPortalSelect();
 runLoadingScreen();
