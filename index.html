@@ -1,10 +1,9 @@
-
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Caça-Palavras dos Portais</title>
+<title>Word-Portal</title>
 <style>
   :root {
     --bg: #0e1420;
@@ -13,14 +12,14 @@
     --text: #eef2f8;
     --muted: #8ea0bd;
     --line: #2a3752;
-    --accent-marinha: #2fb3a3;
-    --accent-marinha-2: #163a3f;
+    --accent-marine: #2fb3a3;
+    --accent-marine-2: #163a3f;
     --accent-cosmos: #8b6fe8;
     --accent-cosmos-2: #241c47;
-    --accent-dicionario: #d4a24c;
-    --accent-dicionario-2: #3a2f18;
-    --accent-floresta: #4caf6a;
-    --accent-floresta-2: #163a22;
+    --accent-dictionary: #d4a24c;
+    --accent-dictionary-2: #3a2f18;
+    --accent-forest: #4caf6a;
+    --accent-forest-2: #163a22;
   }
 
   * { box-sizing: border-box; }
@@ -33,13 +32,13 @@
     min-height: 100vh;
   }
 
-  #app { max-width: 1100px; margin: 0 auto; padding: 28px 20px 60px; }
+  #app { position: relative; z-index: 1; max-width: 1100px; margin: 0 auto; padding: 28px 20px 60px; }
 
   @media (max-width: 560px) {
     #app { padding: 18px 12px 50px; }
   }
 
-  /* ---------- Tela de seleção de portal ---------- */
+  /* ---------- Portal selection screen ---------- */
   #portalSelect { text-align: center; padding-top: 40px; }
   #portalSelect h1 {
     font-size: 2.1rem;
@@ -69,10 +68,10 @@
   .portal-card:hover { transform: translateY(-3px); }
   .portal-card:focus-visible { outline: 2px solid var(--text); outline-offset: 3px; }
 
-  .portal-card.marinha:hover { border-color: var(--accent-marinha); }
+  .portal-card.marine:hover { border-color: var(--accent-marine); }
   .portal-card.cosmos:hover { border-color: var(--accent-cosmos); }
-  .portal-card.dicionario:hover { border-color: var(--accent-dicionario); }
-  .portal-card.floresta:hover { border-color: var(--accent-floresta); }
+  .portal-card.dictionary:hover { border-color: var(--accent-dictionary); }
+  .portal-card.forest:hover { border-color: var(--accent-forest); }
 
   .portal-emblem {
     width: 40px; height: 40px;
@@ -81,16 +80,16 @@
     display: flex; align-items: center; justify-content: center;
     font-size: 1.3rem;
   }
-  .marinha .portal-emblem { background: var(--accent-marinha-2); color: var(--accent-marinha); }
+  .marine .portal-emblem { background: var(--accent-marine-2); color: var(--accent-marine); }
   .cosmos .portal-emblem { background: var(--accent-cosmos-2); color: var(--accent-cosmos); }
-  .dicionario .portal-emblem { background: var(--accent-dicionario-2); color: var(--accent-dicionario); }
-  .floresta .portal-emblem { background: var(--accent-floresta-2); color: var(--accent-floresta); }
+  .dictionary .portal-emblem { background: var(--accent-dictionary-2); color: var(--accent-dictionary); }
+  .forest .portal-emblem { background: var(--accent-forest-2); color: var(--accent-forest); }
 
   .portal-card h2 { margin: 0 0 6px; font-size: 1.25rem; font-weight: normal; }
   .portal-card p { margin: 0; color: var(--muted); font-size: 0.85rem; line-height: 1.4; }
   .portal-progress { margin-top: 16px; font-size: 0.78rem; color: var(--muted); }
 
-  /* ---------- Tela do jogo ---------- */
+  /* ---------- Game screen ---------- */
   #gameScreen { display: none; }
   #gameScreen.active { display: block; }
   #portalSelect.active { display: block; }
@@ -133,7 +132,7 @@
     justify-content: center;
   }
 
-  /* Grade */
+  /* Grid */
   #gridWrap { flex: 0 0 auto; max-width: 100%; }
   #grid {
     display: grid;
@@ -155,7 +154,7 @@
   .cell.selecting { background: var(--panel-2); border-color: var(--muted); }
   .cell.found { color: var(--bg); }
 
-  /* Painel lateral */
+  /* Side panel */
   #sidePanel { flex: 1 1 260px; min-width: 240px; max-width: 100%; }
 
   @media (max-width: 560px) {
@@ -220,28 +219,28 @@
   }
   .new-puzzle-btn:hover { opacity: 0.8; }
 
-  /* Temas por portal */
-  body.theme-marinha .cell.found { background: var(--accent-marinha); }
-  body.theme-marinha .win-msg { background: var(--accent-marinha-2); color: var(--accent-marinha); }
-  body.theme-marinha .portal-title .tag { color: var(--accent-marinha); }
-  body.theme-marinha .notebook-fab:hover { border-color: var(--accent-marinha); }
+  /* Per-portal theme */
+  body.theme-marine .cell.found { background: var(--accent-marine); }
+  body.theme-marine .win-msg { background: var(--accent-marine-2); color: var(--accent-marine); }
+  body.theme-marine .portal-title .tag { color: var(--accent-marine); }
+  body.theme-marine .notebook-fab:hover { border-color: var(--accent-marine); }
 
   body.theme-cosmos .cell.found { background: var(--accent-cosmos); }
   body.theme-cosmos .win-msg { background: var(--accent-cosmos-2); color: var(--accent-cosmos); }
   body.theme-cosmos .portal-title .tag { color: var(--accent-cosmos); }
   body.theme-cosmos .notebook-fab:hover { border-color: var(--accent-cosmos); }
 
-  body.theme-dicionario .cell.found { background: var(--accent-dicionario); }
-  body.theme-dicionario .win-msg { background: var(--accent-dicionario-2); color: var(--accent-dicionario); }
-  body.theme-dicionario .portal-title .tag { color: var(--accent-dicionario); }
-  body.theme-dicionario .notebook-fab:hover { border-color: var(--accent-dicionario); }
+  body.theme-dictionary .cell.found { background: var(--accent-dictionary); }
+  body.theme-dictionary .win-msg { background: var(--accent-dictionary-2); color: var(--accent-dictionary); }
+  body.theme-dictionary .portal-title .tag { color: var(--accent-dictionary); }
+  body.theme-dictionary .notebook-fab:hover { border-color: var(--accent-dictionary); }
 
-  body.theme-floresta .cell.found { background: var(--accent-floresta); }
-  body.theme-floresta .win-msg { background: var(--accent-floresta-2); color: var(--accent-floresta); }
-  body.theme-floresta .portal-title .tag { color: var(--accent-floresta); }
-  body.theme-floresta .notebook-fab:hover { border-color: var(--accent-floresta); }
+  body.theme-forest .cell.found { background: var(--accent-forest); }
+  body.theme-forest .win-msg { background: var(--accent-forest-2); color: var(--accent-forest); }
+  body.theme-forest .portal-title .tag { color: var(--accent-forest); }
+  body.theme-forest .notebook-fab:hover { border-color: var(--accent-forest); }
 
-  /* ---------- Ícone flutuante do caderninho ---------- */
+  /* ---------- Floating notebook icon ---------- */
   .notebook-fab {
     display: none;
     position: fixed;
@@ -275,7 +274,7 @@
   }
   .fab-dot.show { display: block; }
 
-  /* ---------- Modal do caderninho ---------- */
+  /* ---------- Notebook modal ---------- */
   .notebook-modal {
     display: none;
     position: fixed;
@@ -329,23 +328,159 @@
   @media (max-width: 380px) {
     .cell { width: clamp(17px, 7vw, 32px); height: clamp(17px, 7vw, 32px); }
   }
+
+  /* ---------- Visual feedback when a word is found ---------- */
+  @keyframes foundPop {
+    0%   { transform: scale(1);    box-shadow: 0 0 0 rgba(255,255,255,0); }
+    35%  { transform: scale(1.28); box-shadow: 0 0 14px rgba(255,255,255,0.85); }
+    100% { transform: scale(1);    box-shadow: 0 0 0 rgba(255,255,255,0); }
+  }
+  .cell.just-found {
+    animation: foundPop 0.5s ease;
+    position: relative;
+    z-index: 2;
+  }
+
+  /* ---------- Ambient decoration ---------- */
+  .ambient-decor {
+    position: fixed;
+    inset: 0;
+    overflow: hidden;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  /* Default (selection screen): soft blurred blobs */
+  .ambient-decor .blob {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(60px);
+    opacity: 0.28;
+    animation: blobFloat 16s ease-in-out infinite;
+  }
+  .blob-1 { width: 260px; height: 260px; background: var(--accent-marine); top: -70px; left: -60px; }
+  .blob-2 { width: 220px; height: 220px; background: var(--accent-cosmos); bottom: -70px; right: -50px; animation-delay: -5s; }
+  .blob-3 { width: 190px; height: 190px; background: var(--accent-dictionary); top: 45%; right: 6%; animation-delay: -9s; }
+  .blob-4 { width: 200px; height: 200px; background: var(--accent-forest); bottom: 20%; left: 4%; animation-delay: -12s; }
+
+  @keyframes blobFloat {
+    0%, 100% { transform: translate(0, 0); }
+    50%      { transform: translate(24px, -28px); }
+  }
+
+  /* Per-theme floating decoration items, generated in JS */
+  .decor-item {
+    position: absolute;
+    will-change: transform, opacity;
+    pointer-events: none;
+    line-height: 1;
+  }
+
+  @keyframes decorRise {
+    0%   { transform: translateY(0) translateX(0); opacity: 0; }
+    12%  { opacity: var(--op, 0.5); }
+    88%  { opacity: var(--op, 0.5); }
+    100% { transform: translateY(-115vh) translateX(var(--drift, 20px)); opacity: 0; }
+  }
+  .decor-rise { bottom: -10%; animation: decorRise var(--dur, 12s) linear infinite; animation-delay: var(--delay, 0s); }
+
+  @keyframes decorTwinkle {
+    0%, 100% { opacity: var(--op-min, 0.15); transform: scale(0.85); }
+    50%      { opacity: var(--op-max, 0.9);  transform: scale(1.15); }
+  }
+  .decor-twinkle { animation: decorTwinkle var(--dur, 3s) ease-in-out infinite; animation-delay: var(--delay, 0s); }
+
+  @keyframes decorFall {
+    0%   { transform: translateY(-10vh) translateX(0) rotate(0deg); opacity: 0; }
+    12%  { opacity: var(--op, 0.6); }
+    88%  { opacity: var(--op, 0.6); }
+    100% { transform: translateY(115vh) translateX(var(--drift, 40px)) rotate(var(--rot, 180deg)); opacity: 0; }
+  }
+  .decor-fall { top: -10%; animation: decorFall var(--dur, 14s) linear infinite; animation-delay: var(--delay, 0s); }
+
+  @keyframes decorBob {
+    0%, 100% { transform: translateY(0) rotate(var(--rot, -6deg)); }
+    50%      { transform: translateY(-14px) rotate(var(--rot2, 6deg)); }
+  }
+  .decor-bob { animation: decorBob var(--dur, 6s) ease-in-out infinite; animation-delay: var(--delay, 0s); }
+
+  /* ---------- Loading screen ---------- */
+  .loading-screen {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    background: var(--bg);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 22px;
+    transition: opacity 0.5s ease;
+  }
+  .loading-screen.fade-out { opacity: 0; pointer-events: none; }
+
+  .loading-title {
+    font-size: 2.4rem;
+    font-weight: normal;
+    letter-spacing: 0.5px;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 2px;
+  }
+  .loading-title .dash { color: var(--accent-cosmos); }
+
+  .loading-bar-track {
+    width: 220px;
+    height: 6px;
+    border-radius: 4px;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    overflow: hidden;
+  }
+  .loading-bar-fill {
+    height: 100%;
+    width: 0%;
+    border-radius: 4px;
+    background: linear-gradient(90deg, var(--accent-marine), var(--accent-cosmos));
+    transition: width 0.18s ease;
+  }
+
+  .loading-hint {
+    margin: 0;
+    font-size: 0.8rem;
+    color: var(--muted);
+    letter-spacing: 0.3px;
+  }
 </style>
 </head>
 <body>
 
+<!-- LOADING SCREEN -->
+<div id="loadingScreen" class="loading-screen">
+  <h1 class="loading-title">Word<span class="dash">-</span>Portal</h1>
+  <div class="loading-bar-track">
+    <div class="loading-bar-fill" id="loadingBarFill"></div>
+  </div>
+  <p class="loading-hint">opening the portals...</p>
+</div>
+
+<!-- Ambient decoration (theme changes dynamically via JS) -->
+<div class="ambient-decor" id="ambientDecor" aria-hidden="true"></div>
+
 <div id="app">
 
-  <!-- TELA 1: seleção de portal -->
+  <!-- SCREEN 1: portal selection -->
   <section id="portalSelect" class="active">
-    <h1>Caça-Palavras dos Portais</h1>
-    <p class="sub">Escolha um portal para explorar. Cada palavra encontrada revela uma página no caderninho.</p>
+    <h1>Word-Portal</h1>
+    <p class="sub">Pick a portal to explore. Every word you find unlocks a page in the notebook.</p>
     <div class="portals-row" id="portalsRow"></div>
   </section>
 
-  <!-- TELA 2: jogo -->
+  <!-- SCREEN 2: gameplay -->
   <section id="gameScreen">
     <div class="top-bar">
-      <button class="back-btn" id="backBtn">&larr; Voltar aos portais</button>
+      <button class="back-btn" id="backBtn">&larr; Back to portals</button>
       <div class="portal-title" id="portalTitle">
         <span class="name"></span>
         <span class="tag"></span>
@@ -361,25 +496,25 @@
 
       <div id="sidePanel">
         <div class="panel-block">
-          <h3>Palavras do portal</h3>
+          <h3>Portal words</h3>
           <ul id="wordList"></ul>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- Ícone flutuante do caderninho -->
-  <button id="notebookFab" class="notebook-fab" aria-label="Abrir caderninho" aria-haspopup="dialog">
+  <!-- Floating notebook icon -->
+  <button id="notebookFab" class="notebook-fab" aria-label="Open notebook" aria-haspopup="dialog">
     <span class="fab-icon">📖</span>
     <span class="fab-dot" id="fabDot"></span>
   </button>
 
-  <!-- Modal do caderninho -->
-  <div id="notebookModal" class="notebook-modal" role="dialog" aria-label="Caderninho" aria-modal="true">
+  <!-- Notebook modal -->
+  <div id="notebookModal" class="notebook-modal" role="dialog" aria-label="Notebook" aria-modal="true">
     <div class="notebook-modal-inner">
       <div class="notebook-modal-header">
-        <h3>Caderninho</h3>
-        <button id="closeNotebook" class="close-btn" aria-label="Fechar caderninho">&times;</button>
+        <h3>Notebook</h3>
+        <button id="closeNotebook" class="close-btn" aria-label="Close notebook">&times;</button>
       </div>
       <div id="notebook"></div>
     </div>
@@ -389,147 +524,147 @@
 
 <script>
 /* =========================================================
-   DADOS DOS PORTAIS
+   PORTAL DATA
    ========================================================= */
 const PORTALS = {
-  marinha: {
-    name: "Vida Marinha",
-    tag: "Portal 1 · Oceano",
+  marine: {
+    name: "Marine Life",
+    tag: "Portal 1 · Ocean",
     emblem: "🌊",
-    className: "marinha",
-    description: "Criaturas e paisagens que vivem sob as ondas.",
-    theme: "theme-marinha",
+    className: "marine",
+    description: "Creatures and scenery living beneath the waves.",
+    theme: "theme-marine",
     words: [
-      { word: "TUBARAO",    def: "Peixe cartilaginoso predador, presente nos oceanos há mais de 400 milhões de anos." },
-      { word: "POLVO",      def: "Molusco de oito braços, conhecido pela inteligência e pela capacidade de mudar de cor." },
-      { word: "BALEIA",     def: "Maior mamífero do planeta, respira ar mas vive toda a vida na água." },
-      { word: "RECIFE",     def: "Estrutura formada por corais que serve de abrigo para milhares de espécies marinhas." },
-      { word: "CORAL",      def: "Pequeno animal marinho que vive em colônias e forma estruturas calcárias coloridas." },
-      { word: "MEDUSA",     def: "Animal gelatinoso e translúcido que se move pela água usando pulsos do corpo." },
-      { word: "GOLFINHO",   def: "Mamífero marinho social e inteligente, conhecido pelos saltos e sons de ecolocalização." },
-      { word: "LULA",       def: "Molusco de corpo alongado e dez tentáculos, parente próximo do polvo." },
-      { word: "PLANCTON",   def: "Conjunto de organismos microscópicos que flutuam na água e sustentam toda a cadeia alimentar marinha." },
-      { word: "TARTARUGA",  def: "Réptil marinho de casco rígido que retorna à praia onde nasceu para desovar." },
-      { word: "CARANGUEJO", def: "Crustáceo de corpo achatado e duas grandes pinças, costuma andar de lado pela areia." },
-      { word: "CAMARAO",    def: "Pequeno crustáceo de corpo curvo e translúcido, base da alimentação de muitos peixes." },
-      { word: "LAGOSTA",    def: "Crustáceo de carapaça rígida e longas antenas, parente do camarão porém bem maior." },
-      { word: "FOCA",       def: "Mamífero marinho de corpo hidrodinâmico que descansa em rochas e gelo entre mergulhos." },
-      { word: "LONTRA",     def: "Mamífero semiaquático ágil; algumas espécies vivem no mar e usam pedras para abrir conchas." },
-      { word: "PEIXEBOI",   def: "Mamífero aquático grande e pacato, também chamado de vaca-marinha, que se alimenta de plantas." },
-      { word: "ALGA",       def: "Organismo aquático fotossintetizante que forma florestas submersas e produz parte do oxigênio do planeta." },
-      { word: "ONDA",       def: "Movimento oscilante da superfície da água, gerado principalmente pelo vento sobre o oceano." },
-      { word: "ABISSAL",    def: "Relativo às profundezas do oceano, onde a luz do sol não chega." },
-      { word: "ANEMONA",    def: "Animal marinho de tentáculos coloridos, fixo em rochas ou recifes, que vive em parceria com peixes-palhaço." },
-      { word: "KRILL",      def: "Pequeno crustáceo que vive em grandes cardumes e serve de alimento principal para baleias." },
-      { word: "NARVAL",     def: "Baleia ártica conhecida pela longa presa em espiral que se projeta da cabeça." },
-      { word: "ORCA",       def: "Grande golfinho predador, também chamado de baleia-assassina, que caça em grupos organizados." },
-      { word: "ATUM",       def: "Peixe veloz de grande porte, capaz de nadar longas distâncias migratórias pelo oceano aberto." },
-      { word: "PINGUIM",    def: "Ave marinha que não voa, mas nada com grande habilidade usando as asas como nadadeiras." }
+      { word: "SHARK",     def: "Cartilaginous predatory fish that has lived in the oceans for more than 400 million years." },
+      { word: "OCTOPUS",   def: "Eight-armed mollusk known for its intelligence and ability to change color." },
+      { word: "WHALE",     def: "The largest mammal on the planet; it breathes air but spends its whole life in water." },
+      { word: "REEF",      def: "Structure built by corals that shelters thousands of marine species." },
+      { word: "CORAL",     def: "Small marine animal that lives in colonies and forms colorful limestone structures." },
+      { word: "JELLYFISH", def: "Gelatinous, translucent animal that moves through water by pulsing its body." },
+      { word: "DOLPHIN",   def: "Social, intelligent marine mammal known for jumping and echolocation sounds." },
+      { word: "SQUID",     def: "Mollusk with an elongated body and ten tentacles, closely related to the octopus." },
+      { word: "PLANKTON",  def: "Microscopic organisms that drift in water and support the entire marine food chain." },
+      { word: "TURTLE",    def: "Marine reptile with a rigid shell that returns to the beach where it hatched to lay eggs." },
+      { word: "CRAB",      def: "Crustacean with a flattened body and two large claws that usually walks sideways." },
+      { word: "SHRIMP",    def: "Small, curved, translucent crustacean that forms the base diet of many fish." },
+      { word: "LOBSTER",   def: "Crustacean with a hard shell and long antennae, a much larger relative of the shrimp." },
+      { word: "SEAL",      def: "Streamlined marine mammal that rests on rocks or ice between dives." },
+      { word: "OTTER",     def: "Agile semi-aquatic mammal; some species live in the sea and use rocks to open shells." },
+      { word: "MANATEE",   def: "Large, gentle aquatic mammal, sometimes called a sea cow, that feeds on plants." },
+      { word: "SEAWEED",   def: "Photosynthetic aquatic organism that forms underwater forests and produces much of the planet's oxygen." },
+      { word: "WAVE",      def: "Oscillating movement of the water's surface, mostly caused by wind over the ocean." },
+      { word: "ABYSSAL",   def: "Relating to the deepest parts of the ocean, where sunlight never reaches." },
+      { word: "ANEMONE",   def: "Colorful, tentacled marine animal fixed to rocks or reefs, living in partnership with clownfish." },
+      { word: "KRILL",     def: "Tiny crustacean that lives in huge swarms and is a main food source for whales." },
+      { word: "NARWHAL",   def: "Arctic whale known for the long spiral tusk projecting from its head." },
+      { word: "ORCA",      def: "Large predatory dolphin, also called a killer whale, that hunts in organized pods." },
+      { word: "TUNA",      def: "Fast, large fish able to swim long migratory distances across the open ocean." },
+      { word: "PENGUIN",   def: "Flightless seabird that swims skillfully using its wings as flippers." }
     ]
   },
   cosmos: {
     name: "Cosmos",
-    tag: "Portal 2 · Espaço",
+    tag: "Portal 2 · Space",
     emblem: "✦",
     className: "cosmos",
-    description: "Astros, fenômenos e distâncias que cabem no céu noturno.",
+    description: "Stars, phenomena, and distances that fit in the night sky.",
     theme: "theme-cosmos",
     words: [
-      { word: "GALAXIA",    def: "Enorme conjunto de estrelas, poeira e gás unidos pela gravidade; a Via Láctea é a nossa." },
-      { word: "COMETA",     def: "Corpo gelado que, ao se aproximar do Sol, forma uma cauda luminosa de gás e poeira." },
-      { word: "NEBULOSA",   def: "Nuvem de gás e poeira no espaço, muitas vezes o berço de novas estrelas." },
-      { word: "PULSAR",     def: "Estrela de nêutrons que gira rapidamente e emite feixes de radiação em intervalos regulares." },
-      { word: "METEORO",    def: "Rastro de luz causado por um fragmento de rocha que queima ao entrar na atmosfera." },
-      { word: "SATURNO",    def: "Planeta do sistema solar famoso por seus vastos anéis de gelo e rocha." },
-      { word: "ORBITA",     def: "Trajetória curva que um corpo celeste percorre ao redor de outro sob efeito da gravidade." },
-      { word: "ASTEROIDE",  def: "Corpo rochoso menor que um planeta, geralmente encontrado em cinturões ao redor do Sol." },
-      { word: "QUASAR",     def: "Núcleo extremamente brilhante de uma galáxia distante, alimentado por um buraco negro supermassivo." },
-      { word: "ECLIPSE",    def: "Fenômeno em que um corpo celeste bloqueia, total ou parcialmente, a luz de outro." },
-      { word: "SUPERNOVA",  def: "Explosão violenta que marca o fim da vida de uma estrela massiva." },
-      { word: "VIALACTEA",  def: "Galáxia espiral que contém o Sol, a Terra e todo o nosso sistema solar." },
-      { word: "MARTE",      def: "Planeta vermelho, o quarto a partir do Sol, alvo de diversas missões de exploração." },
-      { word: "JUPITER",    def: "Maior planeta do sistema solar, um gigante gasoso com uma grande mancha vermelha." },
-      { word: "VENUS",      def: "Segundo planeta a partir do Sol, com atmosfera densa e temperatura extremamente alta." },
-      { word: "MERCURIO",   def: "Menor planeta do sistema solar e o mais próximo do Sol." },
-      { word: "URANO",      def: "Planeta gigante gelado que gira quase deitado em relação à sua órbita." },
-      { word: "NETUNO",     def: "Planeta mais distante do sistema solar, de cor azul intensa e ventos fortíssimos." },
-      { word: "ESTRELA",    def: "Corpo celeste que brilha com luz própria, gerada por reações nucleares em seu núcleo." },
-      { word: "TELESCOPIO", def: "Instrumento óptico usado para observar objetos distantes no céu, como estrelas e galáxias." },
-      { word: "ASTRONAUTA", def: "Profissional treinado para viajar e trabalhar no espaço." },
-      { word: "FOGUETE",    def: "Veículo propulsionado usado para lançar naves, satélites e astronautas ao espaço." },
-      { word: "GRAVIDADE",  def: "Força que atrai corpos com massa entre si, responsável por manter planetas em órbita." },
-      { word: "BIGBANG",    def: "Teoria que descreve a origem do universo a partir de uma expansão inicial extremamente densa e quente." },
-      { word: "EXOPLANETA", def: "Planeta que orbita uma estrela fora do nosso sistema solar." }
+      { word: "GALAXY",     def: "Huge collection of stars, dust, and gas held together by gravity; the Milky Way is ours." },
+      { word: "COMET",      def: "Icy body that forms a glowing tail of gas and dust as it nears the Sun." },
+      { word: "NEBULA",     def: "Cloud of gas and dust in space, often the birthplace of new stars." },
+      { word: "PULSAR",     def: "Rapidly spinning neutron star that emits beams of radiation at regular intervals." },
+      { word: "METEOR",     def: "Streak of light caused by a rock fragment burning up as it enters the atmosphere." },
+      { word: "SATURN",     def: "Solar system planet famous for its vast rings of ice and rock." },
+      { word: "ORBIT",      def: "Curved path a celestial body follows around another under the pull of gravity." },
+      { word: "ASTEROID",   def: "Rocky body smaller than a planet, usually found in belts around the Sun." },
+      { word: "QUASAR",     def: "Extremely bright core of a distant galaxy, powered by a supermassive black hole." },
+      { word: "ECLIPSE",    def: "Event in which one celestial body fully or partly blocks the light of another." },
+      { word: "SUPERNOVA",  def: "Violent explosion that marks the end of a massive star's life." },
+      { word: "MILKYWAY",   def: "Spiral galaxy that contains the Sun, the Earth, and our entire solar system." },
+      { word: "MARS",       def: "The red planet, fourth from the Sun and the target of many exploration missions." },
+      { word: "JUPITER",    def: "The largest planet in the solar system, a gas giant with a huge red spot." },
+      { word: "VENUS",      def: "Second planet from the Sun, with a dense atmosphere and extremely high temperatures." },
+      { word: "MERCURY",    def: "The smallest planet in the solar system and the closest to the Sun." },
+      { word: "URANUS",     def: "Icy giant planet that spins almost on its side relative to its orbit." },
+      { word: "NEPTUNE",    def: "The most distant planet in the solar system, deep blue and battered by fierce winds." },
+      { word: "STAR",       def: "Celestial body that shines with its own light, generated by nuclear reactions in its core." },
+      { word: "TELESCOPE",  def: "Optical instrument used to observe distant objects in the sky, like stars and galaxies." },
+      { word: "ASTRONAUT",  def: "Professional trained to travel and work in space." },
+      { word: "ROCKET",     def: "Propelled vehicle used to launch spacecraft, satellites, and astronauts into space." },
+      { word: "GRAVITY",    def: "Force that attracts bodies with mass to one another, keeping planets in orbit." },
+      { word: "BIGBANG",    def: "Theory describing the origin of the universe from an extremely dense, hot initial expansion." },
+      { word: "EXOPLANET",  def: "Planet that orbits a star outside our solar system." }
     ]
   },
-  dicionario: {
-    name: "Dicionário Comum",
-    tag: "Portal 3 · Vocabulário",
+  dictionary: {
+    name: "Common Dictionary",
+    tag: "Portal 3 · Vocabulary",
     emblem: "🔤",
-    className: "dicionario",
-    description: "Palavras do dia a dia — sentimentos e valores — e seus significados.",
-    theme: "theme-dicionario",
+    className: "dictionary",
+    description: "Everyday words — feelings and values — and what they mean.",
+    theme: "theme-dictionary",
     words: [
-      { word: "SAUDADE",       def: "Sentimento de falta de algo ou alguém querido; considerada uma das palavras mais difíceis de traduzir do português." },
-      { word: "AMIZADE",       def: "Vínculo de afeto e confiança construído entre pessoas ao longo do tempo." },
-      { word: "LIBERDADE",     def: "Capacidade de agir, pensar ou se expressar sem imposições indevidas." },
-      { word: "ESPERANCA",     def: "Sentimento de que algo bom ainda pode acontecer, mesmo diante de dificuldades." },
-      { word: "CORAGEM",       def: "Disposição para enfrentar o medo, a dor ou o desconhecido." },
-      { word: "GRATIDAO",      def: "Sentimento de reconhecimento e apreço por algo recebido ou vivido." },
-      { word: "HONESTIDADE",   def: "Qualidade de quem age e fala com sinceridade, sem enganar os outros." },
-      { word: "PACIENCIA",     def: "Capacidade de esperar ou lidar com dificuldades sem se irritar." },
-      { word: "SABEDORIA",     def: "Conhecimento profundo adquirido pela experiência e reflexão ao longo da vida." },
-      { word: "GENEROSIDADE",  def: "Disposição para dar ou compartilhar sem esperar algo em troca." },
-      { word: "HUMILDADE",     def: "Qualidade de reconhecer os próprios limites sem se vangloriar." },
-      { word: "PERSISTENCIA",  def: "Capacidade de continuar tentando mesmo diante de obstáculos e fracassos." },
-      { word: "CRIATIVIDADE",  def: "Habilidade de imaginar soluções ou ideias originais para um problema." },
-      { word: "SIMPLICIDADE",  def: "Qualidade daquilo que é claro, direto e sem excessos." },
-      { word: "TRANQUILIDADE", def: "Estado de calma e ausência de agitação ou preocupação." },
-      { word: "FELICIDADE",    def: "Sensação de bem-estar e satisfação profunda com a vida." },
-      { word: "SINCERIDADE",   def: "Qualidade de expressar pensamentos e sentimentos de forma verdadeira." },
-      { word: "LEALDADE",      def: "Fidelidade e compromisso duradouro com uma pessoa, grupo ou causa." },
-      { word: "COMPAIXAO",     def: "Sentimento de solidariedade diante do sofrimento alheio, com vontade de ajudar." },
-      { word: "EMPATIA",       def: "Capacidade de se colocar no lugar do outro e compreender o que ele sente." },
-      { word: "RESILIENCIA",   def: "Capacidade de se recuperar e se adaptar diante de situações difíceis." },
-      { word: "OTIMISMO",      def: "Tendência a esperar os melhores resultados possíveis diante das situações." },
-      { word: "SERENIDADE",    def: "Estado de paz interior mesmo diante de dificuldades externas." },
-      { word: "PROSPERIDADE",  def: "Condição de bem-estar, crescimento e sucesso ao longo do tempo." },
-      { word: "CURIOSIDADE",   def: "Desejo de aprender, explorar ou entender algo novo." }
+      { word: "FRIENDSHIP", def: "A bond of affection and trust built between people over time." },
+      { word: "FREEDOM",    def: "The ability to act, think, or express yourself without undue restriction." },
+      { word: "HOPE",       def: "The feeling that something good can still happen, even in difficult times." },
+      { word: "COURAGE",    def: "The willingness to face fear, pain, or the unknown." },
+      { word: "GRATITUDE",  def: "A feeling of appreciation for something received or experienced." },
+      { word: "HONESTY",    def: "The quality of acting and speaking truthfully, without deceiving others." },
+      { word: "PATIENCE",   def: "The ability to wait or deal with difficulty without becoming upset." },
+      { word: "WISDOM",     def: "Deep understanding gained through experience and reflection over time." },
+      { word: "GENEROSITY", def: "A willingness to give or share without expecting anything in return." },
+      { word: "HUMILITY",   def: "The quality of recognizing your own limits without boasting." },
+      { word: "PERSISTENCE",def: "The ability to keep trying despite obstacles and setbacks." },
+      { word: "CREATIVITY", def: "The ability to imagine original ideas or solutions to a problem." },
+      { word: "SIMPLICITY", def: "The quality of being clear, direct, and free of excess." },
+      { word: "SERENITY",   def: "A state of inner peace even amid outside difficulties." },
+      { word: "HAPPINESS",  def: "A deep sense of well-being and satisfaction with life." },
+      { word: "SINCERITY",  def: "The quality of expressing thoughts and feelings truthfully." },
+      { word: "LOYALTY",    def: "Lasting faithfulness and commitment to a person, group, or cause." },
+      { word: "COMPASSION", def: "A feeling of solidarity with someone's suffering, paired with a wish to help." },
+      { word: "EMPATHY",    def: "The ability to understand and share what someone else is feeling." },
+      { word: "RESILIENCE", def: "The ability to recover and adapt in the face of hardship." },
+      { word: "OPTIMISM",   def: "A tendency to expect the best possible outcome in any situation." },
+      { word: "TRANQUILITY",def: "A calm, peaceful state free of agitation or worry." },
+      { word: "PROSPERITY", def: "A condition of well-being, growth, and success over time." },
+      { word: "CURIOSITY",  def: "A desire to learn, explore, or understand something new." },
+      { word: "KINDNESS",   def: "The quality of being friendly, considerate, and generous toward others." }
     ]
   },
-  floresta: {
-    name: "Floresta",
-    tag: "Portal 4 · Vida Terrestre",
+  forest: {
+    name: "Forest",
+    tag: "Portal 4 · Land Life",
     emblem: "🌳",
-    className: "floresta",
-    description: "Plantas, animais e paisagens que habitam a mata.",
-    theme: "theme-floresta",
+    className: "forest",
+    description: "Plants, animals, and scenery found in the woods.",
+    theme: "theme-forest",
     words: [
-      { word: "ARVORE",     def: "Planta de grande porte com tronco lenhoso, copa de folhas e raízes profundas." },
-      { word: "FOLHA",      def: "Parte da planta responsável por captar luz solar e realizar a fotossíntese." },
-      { word: "RAIZ",       def: "Parte da planta que fica sob o solo, absorvendo água e nutrientes." },
-      { word: "TRONCO",     def: "Parte central e rígida da árvore, que sustenta os galhos e a copa." },
-      { word: "MUSGO",      def: "Pequena planta sem flores que cresce em locais úmidos e sombreados." },
-      { word: "COGUMELO",   def: "Corpo reprodutivo de um fungo, muitas vezes encontrado no solo da floresta." },
-      { word: "ESQUILO",    def: "Pequeno mamífero ágil que vive em árvores e costuma guardar sementes para o inverno." },
-      { word: "RAPOSA",     def: "Mamífero carnívoro de focinho alongado e cauda espessa, conhecido pela esperteza." },
-      { word: "CORUJA",     def: "Ave de rapina noturna, com visão e audição extremamente apuradas." },
-      { word: "LOBO",       def: "Mamífero selvagem que vive e caça em grupos chamados de matilhas." },
-      { word: "URSO",       def: "Grande mamífero de pelagem espessa, onívoro, encontrado em florestas de clima frio." },
-      { word: "VEADO",      def: "Mamífero herbívoro de pernas longas e finas, conhecido pela agilidade ao fugir de predadores." },
-      { word: "JAVALI",     def: "Mamífero selvagem parecido com o porco, de presas curvas e pelagem áspera." },
-      { word: "TATU",       def: "Mamífero coberto por uma carapaça óssea, capaz de se enrolar para se proteger." },
-      { word: "ONCA",       def: "Grande felino predador de pelagem manchada, um dos maiores das Américas." },
-      { word: "MACACO",     def: "Mamífero ágil de membros longos, muitas vezes vivendo em grupos nas copas das árvores." },
-      { word: "TUCANO",     def: "Ave tropical reconhecida pelo bico grande e colorido." },
-      { word: "BORBOLETA",  def: "Inseto de asas coloridas que passa por metamorfose completa antes de voar." },
-      { word: "FORMIGA",    def: "Inseto social que vive em colônias organizadas e carrega cargas várias vezes o próprio peso." },
-      { word: "MINHOCA",    def: "Pequeno animal de corpo alongado que vive no solo e ajuda a fertilizar a terra." },
-      { word: "SERPENTE",   def: "Réptil de corpo longo e sem patas, que se movimenta rastejando pelo chão." },
-      { word: "VAGALUME",   def: "Inseto capaz de emitir luz própria, comum em noites de floresta." },
-      { word: "CLAREIRA",   def: "Espaço aberto em meio à floresta, onde a luz do sol chega diretamente ao chão." },
-      { word: "HUMUS",      def: "Camada de matéria orgânica decomposta que torna o solo mais fértil." },
-      { word: "CAMUFLAGEM", def: "Estratégia de usar cor ou padrão do ambiente para se esconder de predadores ou presas." }
+      { word: "TREE",        def: "A large plant with a woody trunk, leafy crown, and deep roots." },
+      { word: "LEAF",        def: "The part of a plant that captures sunlight to carry out photosynthesis." },
+      { word: "ROOT",        def: "The part of a plant that grows underground, absorbing water and nutrients." },
+      { word: "TRUNK",       def: "The rigid central part of a tree that supports its branches and crown." },
+      { word: "MOSS",        def: "A small, flowerless plant that grows in damp, shady places." },
+      { word: "MUSHROOM",    def: "The reproductive body of a fungus, often found on forest floors." },
+      { word: "SQUIRREL",    def: "A small, agile mammal that lives in trees and often stores seeds for winter." },
+      { word: "FOX",         def: "A carnivorous mammal with a pointed snout and bushy tail, known for its cunning." },
+      { word: "OWL",         def: "A nocturnal bird of prey with extremely sharp sight and hearing." },
+      { word: "WOLF",        def: "A wild mammal that lives and hunts in groups called packs." },
+      { word: "BEAR",        def: "A large, thick-furred, omnivorous mammal found in cold-climate forests." },
+      { word: "DEER",        def: "A herbivorous mammal with long, slender legs known for its agility when fleeing predators." },
+      { word: "BOAR",        def: "A wild mammal resembling a pig, with curved tusks and coarse fur." },
+      { word: "ARMADILLO",   def: "A mammal covered by a bony shell, able to curl up for protection." },
+      { word: "JAGUAR",      def: "A large spotted cat, one of the biggest predators in the Americas." },
+      { word: "MONKEY",      def: "An agile, long-limbed mammal that often lives in groups high in the treetops." },
+      { word: "TOUCAN",      def: "A tropical bird recognized by its large, colorful beak." },
+      { word: "BUTTERFLY",   def: "A colorful-winged insect that undergoes full metamorphosis before it can fly." },
+      { word: "ANT",         def: "A social insect that lives in organized colonies and can carry many times its own weight." },
+      { word: "EARTHWORM",   def: "A small, elongated animal that lives in the soil and helps fertilize the earth." },
+      { word: "SNAKE",       def: "A legless reptile with a long body that moves by slithering along the ground." },
+      { word: "FIREFLY",     def: "An insect capable of producing its own light, common on forest nights." },
+      { word: "CLEARING",    def: "An open space within a forest where sunlight reaches the ground directly." },
+      { word: "HUMUS",       def: "A layer of decomposed organic matter that makes soil more fertile." },
+      { word: "CAMOUFLAGE",  def: "A strategy of using colors or patterns from the surroundings to hide from predators or prey." }
     ]
   }
 };
@@ -543,19 +678,19 @@ const ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
 let state = {
   portalKey: null,
-  grid: [],          // grid[row][col] = letra
-  placements: [],    // palavras sorteadas para a rodada atual
-  roundFound: new Set(),  // palavras encontradas NESTA rodada específica
-  discovered: new Set(),  // TODAS as palavras já descobertas neste portal ao longo do tempo (salvas no localStorage)
+  grid: [],               // grid[row][col] = letter
+  placements: [],         // words drawn for the current round
+  roundFound: new Set(),  // words found in THIS round only
+  discovered: new Set(),  // ALL words ever discovered in this portal (persisted)
   progress: {}
 };
 
 /* =========================================================
-   PERSISTÊNCIA (localStorage)
+   PERSISTENCE (localStorage)
    ========================================================= */
 function loadProgress() {
   try {
-    const raw = localStorage.getItem("cacapalavras_progress");
+    const raw = localStorage.getItem("wordportal_progress");
     return raw ? JSON.parse(raw) : {};
   } catch (e) {
     return {};
@@ -565,11 +700,11 @@ function loadProgress() {
 function saveProgress() {
   state.progress = loadProgress();
   state.progress[state.portalKey] = Array.from(state.discovered);
-  localStorage.setItem("cacapalavras_progress", JSON.stringify(state.progress));
+  localStorage.setItem("wordportal_progress", JSON.stringify(state.progress));
 }
 
 /* =========================================================
-   SELEÇÃO DE PALAVRAS INTELIGENTE
+   SMART WORD SELECTION FOR EACH ROUND
    ========================================================= */
 function shuffle(arr) {
   const a = [...arr];
@@ -596,7 +731,7 @@ function pickPuzzleWords(portalKey, count) {
 }
 
 /* =========================================================
-   GERAÇÃO DA GRADE
+   GRID GENERATION
    ========================================================= */
 function buildEmptyGrid(size) {
   return Array.from({ length: size }, () => Array(size).fill(null));
@@ -659,7 +794,63 @@ function generatePuzzle(portalKey) {
 }
 
 /* =========================================================
-   TELA DE SELEÇÃO
+   AMBIENT DECORATION (per-theme + default)
+   ========================================================= */
+const DECOR_CONFIG = {
+  marine:     { symbols: ["🫧", "🫧", "🐚"], animClass: "decor-rise" },
+  cosmos:     { symbols: ["✦", "✧", "⋆"],   animClass: "decor-twinkle" },
+  dictionary: { symbols: ["❝", "❞", "✎"],   animClass: "decor-bob" },
+  forest:     { symbols: ["🍃", "🍂", "🌿"], animClass: "decor-fall" }
+};
+
+function renderDefaultDecor() {
+  const container = document.getElementById("ambientDecor");
+  container.innerHTML = `
+    <span class="blob blob-1"></span>
+    <span class="blob blob-2"></span>
+    <span class="blob blob-3"></span>
+    <span class="blob blob-4"></span>
+  `;
+}
+
+function renderThemedDecor(themeKey) {
+  const config = DECOR_CONFIG[themeKey];
+  const container = document.getElementById("ambientDecor");
+  container.innerHTML = "";
+  if (!config) { renderDefaultDecor(); return; }
+
+  const count = 16;
+  for (let i = 0; i < count; i++) {
+    const span = document.createElement("span");
+    span.className = "decor-item " + config.animClass;
+    span.textContent = config.symbols[Math.floor(Math.random() * config.symbols.length)];
+
+    const left = Math.random() * 100;
+    const size = 14 + Math.random() * 18;
+    const duration = 8 + Math.random() * 10;
+    const delay = Math.random() * 10;
+
+    span.style.left = left + "%";
+    span.style.fontSize = size + "px";
+    span.style.setProperty("--dur", duration + "s");
+    span.style.setProperty("--delay", (-delay) + "s");
+    span.style.setProperty("--drift", (Math.random() * 60 - 30) + "px");
+    span.style.setProperty("--rot", (Math.random() * 40 - 20) + "deg");
+    span.style.setProperty("--rot2", (Math.random() * 40 - 20) + "deg");
+    span.style.setProperty("--op", (0.25 + Math.random() * 0.35).toFixed(2));
+    span.style.setProperty("--op-min", "0.15");
+    span.style.setProperty("--op-max", (0.6 + Math.random() * 0.3).toFixed(2));
+
+    if (config.animClass === "decor-twinkle" || config.animClass === "decor-bob") {
+      span.style.top = Math.random() * 90 + "%";
+    }
+
+    container.appendChild(span);
+  }
+}
+
+/* =========================================================
+   PORTAL SELECTION SCREEN
    ========================================================= */
 function renderPortalSelect() {
   const row = document.getElementById("portalsRow");
@@ -678,7 +869,7 @@ function renderPortalSelect() {
       <div class="portal-emblem">${portal.emblem}</div>
       <h2>${portal.name}</h2>
       <p>${portal.description}</p>
-      <div class="portal-progress">${found} / ${total} palavras no grimório</div>
+      <div class="portal-progress">${found} / ${total} words in the grimoire</div>
     `;
     card.addEventListener("click", () => openPortal(key));
     card.addEventListener("keydown", (e) => {
@@ -689,7 +880,7 @@ function renderPortalSelect() {
 }
 
 /* =========================================================
-   ABRIR / FECHAR PORTAL
+   OPEN / CLOSE PORTAL
    ========================================================= */
 function openPortal(key) {
   state.portalKey = key;
@@ -713,6 +904,7 @@ function openPortal(key) {
   document.getElementById("winMsg").classList.remove("show");
   hideNotebookDot();
   closeNotebookModal();
+  renderThemedDecor(portal.className);
 
   renderGrid();
   renderWordList();
@@ -726,11 +918,12 @@ function closePortal() {
   document.body.className = "";
   closeNotebookModal();
   hideNotebookDot();
+  renderDefaultDecor();
   renderPortalSelect();
 }
 
 /* =========================================================
-   RENDER: GRADE
+   RENDER: GRID
    ========================================================= */
 function renderGrid() {
   const gridEl = document.getElementById("grid");
@@ -768,7 +961,7 @@ function cellEl(r, c) {
 }
 
 /* =========================================================
-   SELEÇÃO DE PALAVRAS (mouse + toque)
+   WORD SELECTION (mouse + touch)
    ========================================================= */
 let selecting = false;
 let startCell = null;
@@ -776,7 +969,7 @@ let currentPath = [];
 let handlersAttached = false;
 
 function attachSelectionHandlers() {
-  if (handlersAttached) return; // Evita duplicar listeners
+  if (handlersAttached) return; // avoid duplicate listeners
   handlersAttached = true;
   const gridEl = document.getElementById("grid");
 
@@ -887,7 +1080,15 @@ function evaluateSelection(path) {
     state.discovered.add(match.word);
     saveProgress();
 
-    match.cells.forEach(([r, c]) => cellEl(r, c) && cellEl(r, c).classList.add("found"));
+    match.cells.forEach(([r, c]) => {
+      const el = cellEl(r, c);
+      if (el) {
+        el.classList.add("found", "just-found");
+        setTimeout(() => el.classList.remove("just-found"), 500);
+      }
+    });
+
+    playFoundSound();
     renderWordList();
     renderNotebook();
     showNotebookDot();
@@ -901,7 +1102,49 @@ function cellsEqual(a, b) {
 }
 
 /* =========================================================
-   LISTA DE PALAVRAS + CADERNINHO
+   SOUND: "Plim!" when a word is found (Web Audio API, no files)
+   ========================================================= */
+let audioCtx = null;
+
+function getAudioContext() {
+  if (!audioCtx) {
+    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+    if (!AudioContextClass) return null;
+    audioCtx = new AudioContextClass();
+  }
+  return audioCtx;
+}
+
+function playTone(ctx, freq, startTime, peakGain, duration) {
+  const osc = ctx.createOscillator();
+  const gain = ctx.createGain();
+  osc.type = "sine";
+  osc.frequency.value = freq;
+  gain.gain.setValueAtTime(0, startTime);
+  gain.gain.linearRampToValueAtTime(peakGain, startTime + 0.015);
+  gain.gain.exponentialRampToValueAtTime(0.0001, startTime + duration);
+  osc.connect(gain);
+  gain.connect(ctx.destination);
+  osc.start(startTime);
+  osc.stop(startTime + duration + 0.02);
+}
+
+function playFoundSound() {
+  try {
+    const ctx = getAudioContext();
+    if (!ctx) return;
+    if (ctx.state === "suspended") ctx.resume();
+    const now = ctx.currentTime;
+    // "Plim!": two short, ascending tones
+    playTone(ctx, 880,    now,        0.15, 0.16);
+    playTone(ctx, 1318.5, now + 0.08, 0.15, 0.22);
+  } catch (e) {
+    // Web Audio unavailable: fail silently, don't break the game
+  }
+}
+
+/* =========================================================
+   WORD LIST + NOTEBOOK
    ========================================================= */
 function renderWordList() {
   const listEl = document.getElementById("wordList");
@@ -920,7 +1163,7 @@ function renderNotebook() {
   const unlockedWords = Array.from(state.discovered);
 
   if (unlockedWords.length === 0) {
-    noteEl.innerHTML = `<p class="note-empty">Encontre palavras na grade para revelar páginas aqui.</p>`;
+    noteEl.innerHTML = `<p class="note-empty">Find words in the grid to reveal pages here.</p>`;
     return;
   }
 
@@ -943,7 +1186,7 @@ function capitalize(word) {
 }
 
 /* =========================================================
-   NOTIFICAÇÕES / MODAL / VITÓRIA
+   NOTIFICATIONS / MODAL / WIN STATE
    ========================================================= */
 function showNotebookDot() {
   document.getElementById("fabDot").classList.add("show");
@@ -967,8 +1210,8 @@ function checkWin() {
 
   if (foundCount === total) {
     winEl.innerHTML = `
-      Portal completo nesta rodada!
-      <br><button class="new-puzzle-btn" onclick="loadNewPuzzleRodada()">Gerar novo caça-palavras</button>
+      Portal complete for this round!
+      <br><button class="new-puzzle-btn" onclick="loadNewPuzzleRound()">Generate new word search</button>
     `;
     winEl.classList.add("show");
   } else {
@@ -976,7 +1219,7 @@ function checkWin() {
   }
 }
 
-function loadNewPuzzleRodada() {
+function loadNewPuzzleRound() {
   const puzzle = generatePuzzle(state.portalKey);
   state.grid = puzzle.grid;
   state.placements = puzzle.placements;
@@ -988,7 +1231,33 @@ function loadNewPuzzleRodada() {
 }
 
 /* =========================================================
-   INICIALIZAÇÃO
+   LOADING SCREEN
+   ========================================================= */
+function runLoadingScreen() {
+  const fill = document.getElementById("loadingBarFill");
+  let progress = 0;
+
+  const interval = setInterval(() => {
+    progress += Math.random() * 18 + 8;
+    if (progress >= 100) {
+      progress = 100;
+      fill.style.width = progress + "%";
+      clearInterval(interval);
+      setTimeout(hideLoadingScreen, 350);
+    } else {
+      fill.style.width = progress + "%";
+    }
+  }, 180);
+}
+
+function hideLoadingScreen() {
+  const loadingEl = document.getElementById("loadingScreen");
+  loadingEl.classList.add("fade-out");
+  setTimeout(() => { loadingEl.style.display = "none"; }, 500);
+}
+
+/* =========================================================
+   INITIALIZATION
    ========================================================= */
 document.getElementById("backBtn").addEventListener("click", closePortal);
 
@@ -1001,7 +1270,9 @@ document.addEventListener("keydown", (e) => {
   if (e.key === "Escape") closeNotebookModal();
 });
 
+renderDefaultDecor();
 renderPortalSelect();
+runLoadingScreen();
 </script>
 </body>
 </html>
