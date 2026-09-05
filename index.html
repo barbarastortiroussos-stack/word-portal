@@ -480,6 +480,48 @@
 </head>
 <body>
 
+<!-- GameDistribution SDK -->
+<script type="text/javascript">
+  window["GD_OPTIONS"] = {
+    debug: false, // set to true while testing; also toggled via gdsdk.openConsole() in the browser console
+    gameId: "260694a92da04adcb03b51e3e54ef8bb"  // ⚠️ replace with the Game ID from your GameDistribution dashboard
+    advertisementSettings: {
+      autoplay: true,
+    },
+    onEvent: function (event) {
+      switch (event.name) {
+        case "SDK_GAME_START":
+          // An ad just finished (or none was shown) — resume music if it was playing.
+          resumeMusicAfterAd();
+          break;
+        case "SDK_GAME_PAUSE":
+          // An ad is about to play — pause the music so it doesn't play under the ad.
+          pauseMusicForAd();
+          break;
+        case "SDK_READY":
+          // SDK loaded successfully.
+          break;
+        case "SDK_ERROR":
+          // SDK failed to load or an ad failed — the game keeps working normally either way.
+          break;
+        case "SDK_GDPR_TRACKING":
+        case "SDK_GDPR_TARGETING":
+        case "SDK_GDPR_THIRD_PARTY":
+          // Consent-related events; no action needed unless you track consent state yourself.
+          break;
+      }
+    },
+  };
+  (function (d, s, id) {
+    var js, fjs = d.getElementsByTagName(s)[0];
+    if (d.getElementById(id)) return;
+    js = d.createElement(s);
+    js.id = id;
+    js.src = "https://html5.api.gamedistribution.com/main.js";
+    fjs.parentNode.insertBefore(js, fjs);
+  })(document, "script", "gamedistribution-jssdk");
+</script>
+
 <!-- LOADING SCREEN -->
 <div id="loadingScreen" class="loading-screen">
   <h1 class="loading-title">Word<span class="dash">-</span>Portal</h1>
@@ -954,6 +996,21 @@ function closePortal() {
   hideNotebookDot();
   renderDefaultDecor();
   renderPortalSelect();
+  showMidrollAd();
+}
+
+/* =========================================================
+   GAMEDISTRIBUTION: mid-roll ad at natural breakpoints
+   (e.g. when the player returns to the portal menu)
+   ========================================================= */
+function showMidrollAd() {
+  try {
+    if (window.gdsdk && typeof gdsdk.showAd === "function") {
+      gdsdk.showAd();
+    }
+  } catch (e) {
+    // SDK not ready or ad failed — never block the game because of this.
+  }
 }
 
 /* =========================================================
@@ -1267,6 +1324,21 @@ function loadNewPuzzleRound() {
 /* =========================================================
    BACKGROUND MUSIC (loops, respects a saved mute preference)
    ========================================================= */
+let musicWasPlayingBeforeAd = false;
+
+function pauseMusicForAd() {
+  const music = document.getElementById("bgMusic");
+  musicWasPlayingBeforeAd = !music.paused;
+  music.pause();
+}
+
+function resumeMusicAfterAd() {
+  const music = document.getElementById("bgMusic");
+  if (musicWasPlayingBeforeAd && !music.muted) {
+    music.play().catch(() => {});
+  }
+}
+
 function initMusic() {
   const music = document.getElementById("bgMusic");
   const icon = document.getElementById("musicIcon");
