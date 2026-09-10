@@ -484,7 +484,7 @@
 <script type="text/javascript">
   window["GD_OPTIONS"] = {
     debug: true, // ⚠️ temporary: keep this on while testing so SDK logs show up in the console; set back to false once ads are confirmed working
-    gameId: "260694a92da04adcb03b51e3e54ef8bb", // ⚠️ replace with the Game ID from your GameDistribution dashboard
+    gameId: "YOUR_GAMEDISTRIBUTION_GAME_ID", // ⚠️ replace with the Game ID from your GameDistribution dashboard
     advertisementSettings: {
       autoplay: true,
     },
@@ -873,6 +873,126 @@ function generatePuzzle(portalKey) {
 }
 
 /* =========================================================
+   EXPANDING THE WORD POOL VIA FREE PUBLIC APIS
+   Datamuse (related words) + Free Dictionary API (definitions).
+   Runs once per portal per device — results are cached in
+   localStorage, so it's a one-time network cost. If it fails
+   (offline, blocked in an ad-network iframe, API down), it fails
+   silently and the curated 25-word list keeps working exactly as
+   before — this is a pure enhancement, never a requirement.
+   ========================================================= */
+const THEME_QUERY_TERMS = {
+  marine:     ["ocean", "sea", "marine", "fish", "coral reef"],
+  cosmos:     ["space", "star", "galaxy", "planet", "astronomy"],
+  dictionary: ["value", "virtue", "emotion", "feeling", "character"],
+  forest:     ["forest", "tree", "wildlife", "jungle", "woodland"]
+};
+
+const EXTRA_WORDS_CACHE_KEY = "wordportal_extra_words";
+const MAX_EXTRA_WORDS_PER_PORTAL = 40;
+
+function loadExtraWordsCache() {
+  try {
+    const raw = localStorage.getItem(EXTRA_WORDS_CACHE_KEY);
+    return raw ? JSON.parse(raw) : {};
+  } catch (e) {
+    return {};
+  }
+}
+
+function saveExtraWordsCache(cache) {
+  try {
+    localStorage.setItem(EXTRA_WORDS_CACHE_KEY, JSON.stringify(cache));
+  } catch (e) {
+    // storage full or unavailable — safe to ignore, nothing breaks
+  }
+}
+
+function mergeExtraWordsIntoPortals(cache) {
+  Object.entries(cache).forEach(([key, extraWords]) => {
+    const portal = PORTALS[key];
+    if (!portal || !Array.isArray(extraWords)) return;
+    const existing = new Set(portal.words.map(w => w.word));
+    extraWords.forEach(entry => {
+      if (entry && entry.word && entry.def && !existing.has(entry.word)) {
+        portal.words.push(entry);
+        existing.add(entry.word);
+      }
+    });
+  });
+}
+
+function isUsableWord(word) {
+  return /^[A-Za-z]+$/.test(word) && word.length >= 3 && word.length <= 14;
+}
+
+async function fetchRelatedWords(term) {
+  try {
+    const res = await fetch(`https://api.datamuse.com/words?ml=${encodeURIComponent(term)}&max=40`);
+    if (!res.ok) return [];
+    const data = await res.json();
+    return data.map(d => d.word).filter(isUsableWord);
+  } catch (e) {
+    return [];
+  }
+}
+
+async function fetchDefinition(word) {
+  try {
+    const res = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${encodeURIComponent(word.toLowerCase())}`);
+    if (!res.ok) return null;
+    const data = await res.json();
+    return (data && data[0] && data[0].meanings && data[0].meanings[0]
+      && data[0].meanings[0].definitions && data[0].meanings[0].definitions[0]
+      && data[0].meanings[0].definitions[0].definition) || null;
+  } catch (e) {
+    return null;
+  }
+}
+
+async function expandPortalWordPool(portalKey) {
+  const cache = loadExtraWordsCache();
+  if (cache[portalKey] && cache[portalKey].length > 0) {
+    return; // already expanded on a previous visit — nothing new to fetch
+  }
+
+  const portal = PORTALS[portalKey];
+  const terms = THEME_QUERY_TERMS[portalKey] || [];
+  const existing = new Set(portal.words.map(w => w.word));
+
+  const candidateLists = await Promise.all(terms.map(fetchRelatedWords));
+  let candidates = [...new Set(candidateLists.flat())]
+    .map(w => w.toUpperCase())
+    .filter(w => !existing.has(w));
+
+  candidates = shuffle(candidates).slice(0, 90); // cap how many dictionary lookups we attempt
+
+  const newWords = [];
+  const batchSize = 8;
+  for (let i = 0; i < candidates.length && newWords.length < MAX_EXTRA_WORDS_PER_PORTAL; i += batchSize) {
+    const batch = candidates.slice(i, i + batchSize);
+    const defs = await Promise.all(batch.map(fetchDefinition));
+    batch.forEach((word, idx) => {
+      if (defs[idx] && newWords.length < MAX_EXTRA_WORDS_PER_PORTAL) {
+        newWords.push({ word, def: defs[idx] });
+      }
+    });
+  }
+
+  if (newWords.length > 0) {
+    cache[portalKey] = newWords;
+    saveExtraWordsCache(cache);
+    mergeExtraWordsIntoPortals({ [portalKey]: newWords });
+
+    // Refresh the "words in the grimoire" count if the player is
+    // currently looking at the selection screen.
+    if (document.getElementById("portalSelect").classList.contains("active")) {
+      renderPortalSelect();
+    }
+  }
+}
+
+/* =========================================================
    AMBIENT DECORATION (per-theme + default)
    ========================================================= */
 const DECOR_CONFIG = {
@@ -989,6 +1109,11 @@ function openPortal(key) {
   renderWordList();
   renderNotebook();
   checkWin();
+
+  // Background enrichment: fetches more thematic words the first time this
+  // portal is opened on this device. Safe no-op if already cached, offline,
+  // or blocked — never blocks or breaks gameplay.
+  expandPortalWordPool(key);
 }
 
 function closePortal() {
@@ -1418,6 +1543,7 @@ document.addEventListener("keydown", (e) => {
   if (e.key === "Escape") closeNotebookModal();
 });
 
+mergeExtraWordsIntoPortals(loadExtraWordsCache());
 initMusic();
 renderDefaultDecor();
 renderPortalSelect();
